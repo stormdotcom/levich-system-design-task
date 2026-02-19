@@ -6,7 +6,7 @@ async function pollAndProcess(): Promise<void> {
   try {
     await deliveryService.fetchAndProcessBatch();
   } catch (err) {
-    logger.error('Poll cycle error', { error: err instanceof Error ? err.message : err });
+    logger.error(`Poll cycle error: ${err instanceof Error ? err.message : err}`);
   }
 }
 

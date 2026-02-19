@@ -5,9 +5,9 @@ function ts(): string {
 }
 
 export const logger = {
-  info: (msg: string) => console.log(`${ts()} [INFO] ${msg}`),
-  warn: (msg: string) => console.warn(`${ts()} [WARN] ${msg}`),
-  error: (msg: string) => console.error(`${ts()} [ERROR] ${msg}`),
+  info: (msg: string, meta?: unknown) => console.log(`${ts()} [INFO] ${msg}`, meta ? meta : ''),
+  warn: (msg: string, meta?: unknown) => console.warn(`${ts()} [WARN] ${msg}`, meta ? meta : ''),
+  error: (msg: string, meta?: unknown) => console.error(`${ts()} [ERROR] ${msg}`, meta ? meta : ''),
 };
 
 export function logAttempt(log: AttemptLog): void {
