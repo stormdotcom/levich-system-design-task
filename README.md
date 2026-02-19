@@ -202,13 +202,18 @@ docker compose exec dispatcher cat /app/logs/dispatcher.log
 docker compose exec mock-receiver cat /app/logs/mock-receiver.log
 ```
 
-### Proof of work sample,
-<img width="1882" height="475" alt="image" src="https://github.com/user-attachments/assets/345b110d-09ab-4acf-b5da-a629ac869b06" />
+## Example Output & Logs
 
-#### Dispatcher Logs
-<img width="1382" height="543" alt="image" src="https://github.com/user-attachments/assets/d3192ffd-f99d-45d6-a053-e577399b1c72" />
+### 1. Delivery & Retry Logic (Console Output)
 
-#### Mock receiver
-<img width="1102" height="356" alt="image" src="https://github.com/user-attachments/assets/c5526143-6f4d-4297-8041-c1cd88d0f2c9" />
+<img width="1882" height="475" alt="Dispatcher Console Output" src="https://github.com/user-attachments/assets/345b110d-09ab-4acf-b5da-a629ac869b06" />
+
+### 2. Dispatcher Service Logs
+
+<img width="1382" height="543" alt="Dispatcher Service Logs" src="https://github.com/user-attachments/assets/d3192ffd-f99d-45d6-a053-e577399b1c72" />
+
+### 3. Mock Receiver Logs
+
+<img width="1102" height="356" alt="Mock Receiver Logs" src="https://github.com/user-attachments/assets/c5526143-6f4d-4297-8041-c1cd88d0f2c9" />
 
 
