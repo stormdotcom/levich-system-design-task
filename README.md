@@ -208,3 +208,7 @@ docker compose exec mock-receiver cat /app/logs/mock-receiver.log
 #### Dispatcher Logs
 <img width="1382" height="543" alt="image" src="https://github.com/user-attachments/assets/d3192ffd-f99d-45d6-a053-e577399b1c72" />
 
+#### Mock receiver
+<img width="1102" height="356" alt="image" src="https://github.com/user-attachments/assets/c5526143-6f4d-4297-8041-c1cd88d0f2c9" />
+
+
