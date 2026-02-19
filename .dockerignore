@@ -1,0 +1,13 @@
+node_modules
+dist
+app.log
+.env
+.env.local
+.git
+.gitignore
+.vscode
+.idea
+.claude
+.claude_cache
+*.md
+postman_collection.json

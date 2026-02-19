@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: webhook_user
+      POSTGRES_PASSWORD: webhook_pass
+      POSTGRES_DB: fintech
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U webhook_user -d fintech']
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  mock-receiver:
+    build: .
+    command: node dist/mock-receiver/index.js
+    ports:
+      - '3001:3001'
+    environment:
+      HMAC_SECRET: b78943f3976a7bacbbc6de236063817691e6e441be5b14acc7ba25fc0b6dfca2
+      MOCK_RECEIVER_PORT: '3001'
+
+  dispatcher:
+    build: .
+    command: node dist/dispatcher/index.js
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: postgres://webhook_user:webhook_pass@postgres:5432/fintech
+      HMAC_SECRET: b78943f3976a7bacbbc6de236063817691e6e441be5b14acc7ba25fc0b6dfca2
+      TARGET_URL: http://mock-receiver:3001/webhook
+      DISPATCHER_PORT: '3000'
+      POLL_INTERVAL_MS: '5000'
+      MAX_ATTEMPTS: '10'
+      HTTP_TIMEOUT_MS: '10000'
+      BATCH_SIZE: '10'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
