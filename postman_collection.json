@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "Levich-System Design Challenge",
+    "name": "Fintech Webhook Dispatcher API",
     "description": "Webhook Dispatcher API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
