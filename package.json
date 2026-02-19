@@ -7,6 +7,7 @@
     "start:dispatcher": "node dist/dispatcher/index.js",
     "start:mock-receiver": "node dist/mock-receiver/index.js",
     "dev:dispatcher": "ts-node src/dispatcher/index.ts",
+    "dev:dispatcher:debug": "node --inspect=0.0.0.0:9229 -r ts-node/register src/dispatcher/index.ts",
     "dev:mock-receiver": "ts-node src/mock-receiver/index.ts",
     "lint": "eslint .",
     "format": "prettier --write ."
