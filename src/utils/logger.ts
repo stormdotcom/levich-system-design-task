@@ -20,9 +20,7 @@ export function createLogger(serviceName: string): Logger {
   const stream = fs.createWriteStream(logFile, { flags: 'a' });
 
   function write(level: string, msg: string, meta?: unknown): void {
-    const line = meta
-      ? `${ts()} [${level}] ${msg} ${JSON.stringify(meta)}`
-      : `${ts()} [${level}] ${msg}`;
+    const line = meta ? `${ts()} [${level}] ${msg} ${JSON.stringify(meta)}` : `${ts()} [${level}] ${msg}`;
     console.log(line);
     stream.write(line + '\n');
   }

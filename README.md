@@ -7,22 +7,25 @@ When a payment happens, we need to notify a merchant's server via an HTTP webhoo
 ## Approach & Solution
 
 ### Core Insight
-**Don't use memory for anything  can't afford to lose.**
+
+**Don't use memory for anything can't afford to lose.**
 Instead of an in-memory queue, PostgreSQL is the queue. Every event is a row. The dispatcher is a polling loop that reads from that table. If the process crashes, PostgreSQL still has the row. On restart, it picks up exactly where it left off.
 
 ### The Flow
+
 1.  **Ingestion:** `POST /events` → Write to DB (status: `pending`) → Return `202 Accepted`.
 2.  **Polling:** Dispatcher polls every 5s for pending events.
-3.  **Delivery:** Attempt delivery with HMAC signature( for identification  of sender)
+3.  **Delivery:** Attempt delivery with HMAC signature( for identification of sender)
 4.  **Result:**
-    *   **Success (2xx):** Mark as `succeeded`.
-    *   **Failure:** Schedule retry (exponential backoff: 2s, 4s, 8s...).
+    - **Success (2xx):** Mark as `succeeded`.
+    - **Failure:** Schedule retry (exponential backoff: 2s, 4s, 8s...).
 
 ### Reliability Features
-*   **Preventing Duplicate Processing:** Solved with `SELECT FOR UPDATE SKIP LOCKED`. This allows multiple dispatcher instances to run simultaneously without picking up the same row.
-*   **Preventing Data Loss:** We update the DB status only *after* receiving a response. If we crash between sending and updating, we resend on restart (At-Least-Once delivery).
-*   **Idempotency:** The merchant handles idempotency via the unique `event_id`.
-*   **Authentication:** Every outgoing request includes an `X-Signature` header (HMAC-SHA256 of the payload signed with a shared secret).
+
+- **Preventing Duplicate Processing:** Solved with `SELECT FOR UPDATE SKIP LOCKED`. This allows multiple dispatcher instances to run simultaneously without picking up the same row.
+- **Preventing Data Loss:** We update the DB status only _after_ receiving a response. If we crash between sending and updating, we resend on restart (At-Least-Once delivery).
+- **Idempotency:** The merchant handles idempotency via the unique `event_id`.
+- **Authentication:** Every outgoing request includes an `X-Signature` header (HMAC-SHA256 of the payload signed with a shared secret).
 
 ## Project Structure
 
@@ -114,17 +117,17 @@ npm run start:dispatcher
 
 ## Environment Variables
 
-| Variable             | Default                                     | Description                          |
-| -------------------- | ------------------------------------------- | ------------------------------------ |
-| `DATABASE_URL`       | `postgres://...@localhost/fintech`          | PostgreSQL connection string         |
-| `HMAC_SECRET`        | `...` (32 bytes hex)                        | Shared secret for HMAC-SHA256        |
-| `TARGET_URL`         | `http://localhost:3001/webhook`             | Default webhook target URL           |
-| `DISPATCHER_PORT`    | `3000`                                      | Port for the ingestion API           |
-| `MOCK_RECEIVER_PORT` | `3001`                                      | Port for the mock receiver           |
-| `POLL_INTERVAL_MS`   | `5000`                                      | Polling interval in milliseconds     |
-| `MAX_ATTEMPTS`       | `10`                                        | Max retries before marking dead      |
-| `HTTP_TIMEOUT_MS`    | `10000`                                     | HTTP request timeout in milliseconds |
-| `BATCH_SIZE`         | `10`                                        | Max rows fetched per poll cycle      |
+| Variable             | Default                            | Description                          |
+| -------------------- | ---------------------------------- | ------------------------------------ |
+| `DATABASE_URL`       | `postgres://...@localhost/fintech` | PostgreSQL connection string         |
+| `HMAC_SECRET`        | `...` (32 bytes hex)               | Shared secret for HMAC-SHA256        |
+| `TARGET_URL`         | `http://localhost:3001/webhook`    | Default webhook target URL           |
+| `DISPATCHER_PORT`    | `3000`                             | Port for the ingestion API           |
+| `MOCK_RECEIVER_PORT` | `3001`                             | Port for the mock receiver           |
+| `POLL_INTERVAL_MS`   | `5000`                             | Polling interval in milliseconds     |
+| `MAX_ATTEMPTS`       | `10`                               | Max retries before marking dead      |
+| `HTTP_TIMEOUT_MS`    | `10000`                            | HTTP request timeout in milliseconds |
+| `BATCH_SIZE`         | `10`                               | Max rows fetched per poll cycle      |
 
 ## Usage
 
@@ -167,11 +170,13 @@ for i in $(seq 1 20); do
   echo ""
 done
 ```
+
 ## Postman Collection
 
 A ready-to-use Postman collection is included at `postman/Fintech_Webhook_Dispatcher.postman_collection.json`.
 
 **To import:**
+
 1. Open Postman
 2. Click **Import** (top-left)
 3. Drag or browse to `postman/Fintech_Webhook_Dispatcher.postman_collection.json`
@@ -179,14 +184,12 @@ A ready-to-use Postman collection is included at `postman/Fintech_Webhook_Dispat
 
 **Included requests:**
 
-| Request          | Method | Endpoint      | Description                                    |
-|------------------|--------|---------------|------------------------------------------------|
-| Create Event     | POST   | `/events`     | Submit a webhook event with `target_url` and `payload` |
-| List Events      | GET    | `/events`     | List all events; optional `status`, `page`, `limit` query params |
-| Get Event by ID  | GET    | `/events/:id` | Fetch a single event by its UUID               |
-| Health Check     | GET    | `/health`     | Returns `{ status: "ok" }`                     |
-
-> **Tip:** After creating an event, copy the returned `id` and paste it into the **Get Event by ID** request's `:id` path variable to track its delivery status through retries.
+| Request         | Method | Endpoint      | Description                                                      |
+| --------------- | ------ | ------------- | ---------------------------------------------------------------- |
+| Create Event    | POST   | `/events`     | Submit a webhook event with `target_url` and `payload`           |
+| List Events     | GET    | `/events`     | List all events; optional `status`, `page`, `limit` query params |
+| Get Event by ID | GET    | `/events/:id` | Fetch a single event by its UUID                                 |
+| Health Check    | GET    | `/health`     | Returns `{ status: "ok" }`                                       |
 
 ## Logs
 
@@ -215,5 +218,3 @@ docker compose exec mock-receiver cat /app/logs/mock-receiver.log
 ### 3. Mock Receiver Logs
 
 <img width="1102" height="356" alt="Mock Receiver Logs" src="https://github.com/user-attachments/assets/c5526143-6f4d-4297-8041-c1cd88d0f2c9" />
-
-

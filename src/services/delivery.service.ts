@@ -59,14 +59,14 @@ export class DeliveryService {
           'Content-Type': 'application/json',
           'X-Signature': signature,
         },
-        validateStatus: () => true,
+        validateStatus: () => true, //TODO: more verbose logging 
       });
 
       const durationMs = Date.now() - start;
-      const is2xx = response.status >= 200 && response.status < 300;
+      const is2hundred = response.status >= 200 && response.status < 300;
 
       return {
-        success: is2xx,
+        success: is2hundred,
         httpStatus: response.status,
         error: null,
         durationMs,

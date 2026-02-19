@@ -12,6 +12,11 @@ async function pollAndProcess(): Promise<void> {
 
 export function startDispatcher(): void {
   logger.info(`Dispatcher polling loop started (interval: ${config.pollIntervalMs}ms)`);
-  setInterval(pollAndProcess, config.pollIntervalMs);
-  pollAndProcess();
+
+  async function loop(): Promise<void> {
+    await pollAndProcess();
+    setTimeout(loop, config.pollIntervalMs);
+  }
+
+  loop();
 }
