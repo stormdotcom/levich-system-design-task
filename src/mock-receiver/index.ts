@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import http from 'http';
-import winston from 'winston';
 import { verifySignature } from '../utils/hmac';
 import { config } from '../config';
 
@@ -8,23 +7,7 @@ interface RawBodyRequest extends http.IncomingMessage {
   rawBody?: string;
 }
 
-const { combine, timestamp, printf, colorize, json } = winston.format;
-const isProduction = process.env.NODE_ENV === 'production';
-
-const devFormat = printf(({ level, message, timestamp, ...meta }) => {
-  const metaStr = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : '';
-  return `${timestamp} [${level}]${metaStr} ${message}`;
-});
-
-const logger = winston.createLogger({
-  level: 'info',
-  defaultMeta: { service: 'mock-receiver' },
-  transports: [
-    new winston.transports.Console({
-      format: isProduction ? combine(timestamp(), json()) : combine(timestamp({ format: 'HH:mm:ss.SSS' }), colorize(), devFormat),
-    }),
-  ],
-});
+const log = (msg: string) => console.log(`${new Date().toISOString()} [mock-receiver] ${msg}`);
 
 const app = express();
 
@@ -43,11 +26,11 @@ app.post('/webhook', async (req: Request, res: Response) => {
     const delayedFailure = Math.random() < 0.5;
 
     if (delayedFailure) {
-      logger.warn('Simulating delayed failure', { outcome: 'DELAYED_FAILURE', behavior: '12s delay then 500', roll: roll.toFixed(3) });
+      log(`DELAYED_FAILURE (roll=${roll.toFixed(3)}) — 12s delay then 500`);
       await new Promise((r) => setTimeout(r, 12000));
       res.status(500).json({ error: 'Simulated delayed failure' });
     } else {
-      logger.warn('Simulating immediate failure', { outcome: 'IMMEDIATE_FAILURE', behavior: 'instant 500', roll: roll.toFixed(3) });
+      log(`IMMEDIATE_FAILURE (roll=${roll.toFixed(3)}) — instant 500`);
       res.status(500).json({ error: 'Simulated immediate failure' });
     }
   } else {
@@ -55,7 +38,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
     const rawBody = (req as unknown as RawBodyRequest).rawBody;
 
     if (!signature || !rawBody) {
-      logger.error('Missing signature or body', { outcome: 'BAD_REQUEST' });
+      log('BAD_REQUEST — missing signature or body');
       res.status(400).json({ error: 'Missing signature' });
       return;
     }
@@ -63,19 +46,19 @@ app.post('/webhook', async (req: Request, res: Response) => {
     try {
       const valid = verifySignature(rawBody, signature);
       if (valid) {
-        logger.info('Webhook received — signature verified', { outcome: 'SUCCESS', roll: roll.toFixed(3) });
+        log(`SUCCESS (roll=${roll.toFixed(3)}) — signature verified`);
         res.status(200).json({ received: true });
       } else {
-        logger.error('Signature mismatch', { outcome: 'SIGNATURE_MISMATCH', roll: roll.toFixed(3) });
+        log(`SIGNATURE_MISMATCH (roll=${roll.toFixed(3)})`);
         res.status(401).json({ error: 'Invalid signature' });
       }
     } catch (err) {
-      logger.error('Signature verification error', { outcome: 'SIGNATURE_ERROR', error: String(err) });
+      log(`SIGNATURE_ERROR — ${String(err)}`);
       res.status(401).json({ error: 'Signature verification failed' });
     }
   }
 });
 
 app.listen(config.mockReceiverPort, () => {
-  logger.info(`Mock receiver listening on port ${config.mockReceiverPort}`);
+  log(`Listening on port ${config.mockReceiverPort}`);
 });
