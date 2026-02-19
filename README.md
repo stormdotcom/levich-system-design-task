@@ -165,3 +165,5 @@ for i in $(seq 1 20); do
   echo ""
 done
 ```
+### Proof of work sample,
+<img width="1882" height="475" alt="image" src="https://github.com/user-attachments/assets/345b110d-09ab-4acf-b5da-a629ac869b06" />
