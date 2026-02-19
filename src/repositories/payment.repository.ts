@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { QueryTypes, Transaction } from 'sequelize';
 import { sequelize } from '../db/connection';
 import { Payment } from '../db/models/Payment';
-import { CreateEventDTO, LockedEvent, PaymentStatus, PaymentRecord } from '../types';
+import { CreateEventDTO, LockedEvent, PaymentStatus } from '../types';
 import { config } from '../config';
 
 export class PaymentRepository {

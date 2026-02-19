@@ -1,7 +1,12 @@
 import express, { Request, Response } from 'express';
+import http from 'http';
 import winston from 'winston';
 import { verifySignature } from '../utils/hmac';
 import { config } from '../config';
+
+interface RawBodyRequest extends http.IncomingMessage {
+  rawBody?: string;
+}
 
 const { combine, timestamp, printf, colorize, json } = winston.format;
 const isProduction = process.env.NODE_ENV === 'production';
@@ -25,8 +30,8 @@ const app = express();
 
 app.use(
   express.json({
-    verify: (req: any, _res, buf) => {
-      req.rawBody = buf.toString();
+    verify: (req: http.IncomingMessage, _res, buf) => {
+      (req as RawBodyRequest).rawBody = buf.toString();
     },
   }),
 );
@@ -47,7 +52,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
     }
   } else {
     const signature = req.headers['x-signature'] as string;
-    const rawBody = (req as any).rawBody as string;
+    const rawBody = (req as unknown as RawBodyRequest).rawBody;
 
     if (!signature || !rawBody) {
       logger.error('Missing signature or body', { outcome: 'BAD_REQUEST' });
