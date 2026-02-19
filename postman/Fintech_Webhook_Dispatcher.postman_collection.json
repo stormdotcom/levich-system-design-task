@@ -1,0 +1,87 @@
+{
+  "info": {
+    "name": "Fintech Webhook Dispatcher API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Create Event",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"target_url\": \"http://mock-receiver:3001/webhook\",\n  \"payload\": {\n    \"type\": \"payment.completed\",\n    \"amount\": 2500,\n    \"currency\": \"USD\",\n    \"customer_id\": \"cust_001\"\n  }\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/events",
+          "host": ["{{base_url}}"],
+          "path": ["events"]
+        },
+        "description": "Creates a new webhook event. The dispatcher will pick it up and attempt delivery with exponential backoff."
+      },
+      "response": []
+    },
+    {
+      "name": "List Events",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/events?page=1&limit=20",
+          "host": ["{{base_url}}"],
+          "path": ["events"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "20" },
+            { "key": "status", "value": "pending", "disabled": true }
+          ]
+        },
+        "description": "Lists all events. Optionally filter by status (pending, succeeded, dead)."
+      },
+      "response": []
+    },
+    {
+      "name": "Get Event by ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/events/:id",
+          "host": ["{{base_url}}"],
+          "path": ["events", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "<event_id>"
+            }
+          ]
+        },
+        "description": "Fetches a single event by its UUID. Use the id returned from Create Event."
+      },
+      "response": []
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        },
+        "description": "Returns { status: 'ok' } when the dispatcher API is running."
+      },
+      "response": []
+    }
+  ]
+}

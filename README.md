@@ -167,6 +167,41 @@ for i in $(seq 1 20); do
   echo ""
 done
 ```
+## Postman Collection
+
+A ready-to-use Postman collection is included at `postman/Fintech_Webhook_Dispatcher.postman_collection.json`.
+
+**To import:**
+1. Open Postman
+2. Click **Import** (top-left)
+3. Drag or browse to `postman/Fintech_Webhook_Dispatcher.postman_collection.json`
+4. The collection uses a `{{base_url}}` variable defaulting to `http://localhost:3000`
+
+**Included requests:**
+
+| Request          | Method | Endpoint      | Description                                    |
+|------------------|--------|---------------|------------------------------------------------|
+| Create Event     | POST   | `/events`     | Submit a webhook event with `target_url` and `payload` |
+| List Events      | GET    | `/events`     | List all events; optional `status`, `page`, `limit` query params |
+| Get Event by ID  | GET    | `/events/:id` | Fetch a single event by its UUID               |
+| Health Check     | GET    | `/health`     | Returns `{ status: "ok" }`                     |
+
+> **Tip:** After creating an event, copy the returned `id` and paste it into the **Get Event by ID** request's `:id` path variable to track its delivery status through retries.
+
+## Logs
+
+Each service writes to its own log file under the shared `logs/` Docker volume:
+
+- `logs/dispatcher.log` — event pickup, delivery attempts, backoff schedule
+- `logs/mock-receiver.log` — incoming requests, rejections, and acceptances
+
+View logs from Docker:
+
+```bash
+docker compose exec dispatcher cat /app/logs/dispatcher.log
+docker compose exec mock-receiver cat /app/logs/mock-receiver.log
+```
+
 ### Proof of work sample,
 <img width="1882" height="475" alt="image" src="https://github.com/user-attachments/assets/345b110d-09ab-4acf-b5da-a629ac869b06" />
 
