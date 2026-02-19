@@ -2,7 +2,9 @@ import express, { Request, Response } from 'express';
 import http from 'http';
 import { verifySignature } from '../utils/hmac';
 import { config } from '../config';
-import { logger } from '../utils/logger';
+import { createLogger } from '../utils/logger';
+
+const logger = createLogger('mock-receiver');
 
 interface RawBodyRequest extends http.IncomingMessage {
   rawBody?: string;
