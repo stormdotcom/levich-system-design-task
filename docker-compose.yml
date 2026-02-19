@@ -23,6 +23,9 @@ services:
     environment:
       HMAC_SECRET: b78943f3976a7bacbbc6de236063817691e6e441be5b14acc7ba25fc0b6dfca2
       MOCK_RECEIVER_PORT: '3001'
+      SERVICE_NAME: mock-receiver
+    volumes:
+      - logs:/app/logs
 
   dispatcher:
     build: .
@@ -38,9 +41,13 @@ services:
       MAX_ATTEMPTS: '10'
       HTTP_TIMEOUT_MS: '10000'
       BATCH_SIZE: '10'
+      SERVICE_NAME: dispatcher
+    volumes:
+      - logs:/app/logs
     depends_on:
       postgres:
         condition: service_healthy
 
 volumes:
   pgdata:
+  logs:

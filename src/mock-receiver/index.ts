@@ -2,12 +2,11 @@ import express, { Request, Response } from 'express';
 import http from 'http';
 import { verifySignature } from '../utils/hmac';
 import { config } from '../config';
+import { logger } from '../utils/logger';
 
 interface RawBodyRequest extends http.IncomingMessage {
   rawBody?: string;
 }
-
-const log = (msg: string) => console.log(`${new Date().toISOString()} [mock-receiver] ${msg}`);
 
 const app = express();
 
@@ -26,11 +25,11 @@ app.post('/webhook', async (req: Request, res: Response) => {
     const delayedFailure = Math.random() < 0.5;
 
     if (delayedFailure) {
-      log(`DELAYED_FAILURE (roll=${roll.toFixed(3)}) — 12s delay then 500`);
+      logger.warn(`DELAYED_FAILURE (roll=${roll.toFixed(3)}) — 12s delay then 500`);
       await new Promise((r) => setTimeout(r, 12000));
       res.status(500).json({ error: 'Simulated delayed failure' });
     } else {
-      log(`IMMEDIATE_FAILURE (roll=${roll.toFixed(3)}) — instant 500`);
+      logger.warn(`IMMEDIATE_FAILURE (roll=${roll.toFixed(3)}) — instant 500`);
       res.status(500).json({ error: 'Simulated immediate failure' });
     }
   } else {
@@ -38,7 +37,7 @@ app.post('/webhook', async (req: Request, res: Response) => {
     const rawBody = (req as unknown as RawBodyRequest).rawBody;
 
     if (!signature || !rawBody) {
-      log('BAD_REQUEST — missing signature or body');
+      logger.error('BAD_REQUEST — missing signature or body');
       res.status(400).json({ error: 'Missing signature' });
       return;
     }
@@ -46,19 +45,19 @@ app.post('/webhook', async (req: Request, res: Response) => {
     try {
       const valid = verifySignature(rawBody, signature);
       if (valid) {
-        log(`SUCCESS (roll=${roll.toFixed(3)}) — signature verified`);
+        logger.info(`SUCCESS (roll=${roll.toFixed(3)}) — signature verified`);
         res.status(200).json({ received: true });
       } else {
-        log(`SIGNATURE_MISMATCH (roll=${roll.toFixed(3)})`);
+        logger.error(`SIGNATURE_MISMATCH (roll=${roll.toFixed(3)})`);
         res.status(401).json({ error: 'Invalid signature' });
       }
     } catch (err) {
-      log(`SIGNATURE_ERROR — ${String(err)}`);
+      logger.error(`SIGNATURE_ERROR — ${String(err)}`);
       res.status(401).json({ error: 'Signature verification failed' });
     }
   }
 });
 
 app.listen(config.mockReceiverPort, () => {
-  log(`Listening on port ${config.mockReceiverPort}`);
+  logger.info(`Listening on port ${config.mockReceiverPort}`);
 });

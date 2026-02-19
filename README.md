@@ -7,13 +7,13 @@ When a payment happens, we need to notify a merchant's server via an HTTP webhoo
 ## Approach & Solution
 
 ### Core Insight
-**Don't use memory for anything you can't afford to lose.**
+**Don't use memory for anything  can't afford to lose.**
 Instead of an in-memory queue, PostgreSQL is the queue. Every event is a row. The dispatcher is a polling loop that reads from that table. If the process crashes, PostgreSQL still has the row. On restart, it picks up exactly where it left off.
 
 ### The Flow
 1.  **Ingestion:** `POST /events` → Write to DB (status: `pending`) → Return `202 Accepted`.
 2.  **Polling:** Dispatcher polls every 5s for pending events.
-3.  **Delivery:** Attempt delivery with HMAC signature.
+3.  **Delivery:** Attempt delivery with HMAC signature( for identification  of sender)
 4.  **Result:**
     *   **Success (2xx):** Mark as `succeeded`.
     *   **Failure:** Schedule retry (exponential backoff: 2s, 4s, 8s...).
@@ -52,7 +52,7 @@ src/
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
-- (Optional for local dev) [Node.js 20+](https://nodejs.org/) and npm
+- (Optional for local dev) [v22.14.0 or 22+](https://nodejs.org/) and npm
 
 ## Quick Start with Docker
 
