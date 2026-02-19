@@ -10,7 +10,6 @@ import { logger } from '../utils/logger';
 async function main(): Promise<void> {
   logger.info('Webhook Dispatcher starting...');
 
-
   await connectWithRetry();
   await sequelize.sync();
   logger.info('Database synced');

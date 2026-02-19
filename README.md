@@ -1,24 +1,28 @@
 # Webhook Dispatcher — Fintech System Design
 
-## The problem
+## The Problem
 
-when a payment happens, we need to notify a merchant's server via http webhook. merchant servers time out, return 500s, and go offline for hours. if our own service crashes mid-retry, we can't lose the event.
+When a payment happens, we need to notify a merchant's server via an HTTP webhook. Merchant servers time out, return 500s, and go offline for hours. If our own service crashes mid-retry, we can't lose the event.
 
-## How i approached it
+## Approach & Solution
 
-the core insight: don't use memory for anything you can't afford to lose.
-instead of an in-memory queue, postgres is the queue. every event is a row. the dispatcher is a polling loop that reads from that table. if the process crashes, postgres still has the row. on restart, it picks up exactly where it left off.
-the flow:
-POST /events → write to db (status: pending) → return 202
-↓
-dispatcher polls every 5s
-↓
-attempt delivery with hmac signature
-↓
-success → mark succeeded failure → schedule retry (2^n backoff)
-preventing duplicate processing across instances — two dispatcher instances could pick the same row simultaneously. solved with SELECT FOR UPDATE SKIP LOCKED. each instance locks different rows, skipping anything another instance is already working on.
-preventing duplicate delivery after a crash — we update the db only after receiving a 200 response. if we crash between send and db-update, we resend on restart. this is fine — the requirement is at-least-once, and the merchant handles idempotency via event_id.
-authentication — every outgoing request includes an X-Webhook-Signature header: an hmac-sha256 of the payload signed with a shared secret. the mock receiver verifies this on every request.
+### Core Insight
+**Don't use memory for anything you can't afford to lose.**
+Instead of an in-memory queue, PostgreSQL is the queue. Every event is a row. The dispatcher is a polling loop that reads from that table. If the process crashes, PostgreSQL still has the row. On restart, it picks up exactly where it left off.
+
+### The Flow
+1.  **Ingestion:** `POST /events` → Write to DB (status: `pending`) → Return `202 Accepted`.
+2.  **Polling:** Dispatcher polls every 5s for pending events.
+3.  **Delivery:** Attempt delivery with HMAC signature.
+4.  **Result:**
+    *   **Success (2xx):** Mark as `succeeded`.
+    *   **Failure:** Schedule retry (exponential backoff: 2s, 4s, 8s...).
+
+### Reliability Features
+*   **Preventing Duplicate Processing:** Solved with `SELECT FOR UPDATE SKIP LOCKED`. This allows multiple dispatcher instances to run simultaneously without picking up the same row.
+*   **Preventing Data Loss:** We update the DB status only *after* receiving a response. If we crash between sending and updating, we resend on restart (At-Least-Once delivery).
+*   **Idempotency:** The merchant handles idempotency via the unique `event_id`.
+*   **Authentication:** Every outgoing request includes an `X-Signature` header (HMAC-SHA256 of the payload signed with a shared secret).
 
 ## Project Structure
 
@@ -74,15 +78,13 @@ The dispatcher waits for PostgreSQL to be healthy before starting.
 ## Local Development (without Docker)
 
 ```bash
-# 1. Clone and install
-git clone https://github.com/stormdotcom/levich-system-design-task.git
-cd levich-system-design-task
+# 1. Install dependencies
 npm install
 
 # 2. Create a .env file
 cat > .env << 'EOF'
-DATABASE_URL=postgres://postgres:<--your_password-->@localhost:5432/fintech
-HMAC_SECRET=<--your_secret-->
+DATABASE_URL=postgres://webhook_user:webhook_pass@localhost:5432/fintech
+HMAC_SECRET=b78943f3976a7bacbbc6de236063817691e6e441be5b14acc7ba25fc0b6dfca2
 TARGET_URL=http://localhost:3001/webhook
 DISPATCHER_PORT=3000
 MOCK_RECEIVER_PORT=3001
@@ -96,7 +98,7 @@ EOF
 docker run -d --name webhook-pg \
   -e POSTGRES_USER=webhook_user \
   -e POSTGRES_PASSWORD=webhook_pass \
-  -e POSTGRES_DB=webhook_db \
+  -e POSTGRES_DB=fintech \
   -p 5432:5432 \
   postgres:16-alpine
 
@@ -112,21 +114,21 @@ npm run start:dispatcher
 
 ## Environment Variables
 
-| Variable             | Default                                 | Description                          |
-| -------------------- | --------------------------------------- | ------------------------------------ |
-| `DATABASE_URL`       | `postgres://...@localhost/webhook_db`   | PostgreSQL connection string         |
-| `HMAC_SECRET`        | `super-secret-key-change-in-production` | Shared secret for HMAC-SHA256        |
-| `TARGET_URL`         | `http://localhost:3001/webhook`         | Default webhook target URL           |
-| `DISPATCHER_PORT`    | `3000`                                  | Port for the ingestion API           |
-| `MOCK_RECEIVER_PORT` | `3001`                                  | Port for the mock receiver           |
-| `POLL_INTERVAL_MS`   | `5000`                                  | Polling interval in milliseconds     |
-| `MAX_ATTEMPTS`       | `10`                                    | Max retries before marking dead      |
-| `HTTP_TIMEOUT_MS`    | `10000`                                 | HTTP request timeout in milliseconds |
-| `BATCH_SIZE`         | `10`                                    | Max rows fetched per poll cycle      |
+| Variable             | Default                                     | Description                          |
+| -------------------- | ------------------------------------------- | ------------------------------------ |
+| `DATABASE_URL`       | `postgres://...@localhost/fintech`          | PostgreSQL connection string         |
+| `HMAC_SECRET`        | `...` (32 bytes hex)                        | Shared secret for HMAC-SHA256        |
+| `TARGET_URL`         | `http://localhost:3001/webhook`             | Default webhook target URL           |
+| `DISPATCHER_PORT`    | `3000`                                      | Port for the ingestion API           |
+| `MOCK_RECEIVER_PORT` | `3001`                                      | Port for the mock receiver           |
+| `POLL_INTERVAL_MS`   | `5000`                                      | Polling interval in milliseconds     |
+| `MAX_ATTEMPTS`       | `10`                                        | Max retries before marking dead      |
+| `HTTP_TIMEOUT_MS`    | `10000`                                     | HTTP request timeout in milliseconds |
+| `BATCH_SIZE`         | `10`                                        | Max rows fetched per poll cycle      |
 
 ## Usage
 
-### Send a webhook event
+### Send a Webhook Event
 
 ```bash
 curl -X POST http://localhost:3000/events \
@@ -147,15 +149,15 @@ Response (`202 Accepted`):
 }
 ```
 
-> When running locally (not Docker), use `http://localhost:3001/webhook` as the `target_url`.
+> **Note:** When running locally (not Docker), use `http://localhost:3001/webhook` as the `target_url`.
 
-### Health check
+### Health Check
 
 ```bash
 curl http://localhost:3000/health
 ```
 
-### Send multiple events for testing
+### Send Multiple Events (Load Test)
 
 ```bash
 for i in $(seq 1 20); do
