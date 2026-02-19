@@ -50,13 +50,14 @@ export class DeliveryService {
     const start = Date.now();
 
     try {
-      const signature = signPayload(event.payload);
+      const body = { ...event.payload, event_id: event.id };
+      const signature = signPayload(body);
 
-      const response = await axios.post(event.target_url, event.payload, {
-        timeout: config.httpTimeoutMs, // 10 seconds
+      const response = await axios.post(event.target_url, body, {
+        timeout: config.httpTimeoutMs,
         headers: {
           'Content-Type': 'application/json',
-          'X-Signature': signature, // HMAC-SHA256 signature
+          'X-Signature': signature,
         },
         validateStatus: () => true,
       });
@@ -89,7 +90,7 @@ export class DeliveryService {
         nextRetryAt = 'DEAD - max attempts reached';
       } else {
         const backoffSeconds = Math.pow(2, attemptNumber);
-        nextRetryAt = new Date(Date.now() + backoffSeconds * 1000).toISOString();
+        nextRetryAt = `in ${backoffSeconds}s (${new Date(Date.now() + backoffSeconds * 1000).toISOString()})`;
       }
     }
 

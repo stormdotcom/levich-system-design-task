@@ -23,6 +23,7 @@ services:
     environment:
       HMAC_SECRET: b78943f3976a7bacbbc6de236063817691e6e441be5b14acc7ba25fc0b6dfca2
       MOCK_RECEIVER_PORT: '3001'
+      FAIL_FIRST_N: '5'
       SERVICE_NAME: mock-receiver
     volumes:
       - logs:/app/logs

@@ -1,0 +1,124 @@
+2026-02-19T13:42:09.492Z [INFO] Webhook Dispatcher starting...
+2026-02-19T13:42:09.612Z [INFO] Database connection established
+2026-02-19T13:42:09.642Z [INFO] Database synced
+2026-02-19T13:42:09.647Z [INFO] Dispatcher polling loop started (interval: 5000ms)
+2026-02-19T13:42:09.649Z [INFO] API listening on port 3000
+2026-02-19T13:42:10.692Z [INFO] Listening on port 3001
+2026-02-19T13:42:12.341Z [INFO] ::1 - - [19/Feb/2026:13:42:12 +0000] "POST /events HTTP/1.1" 202 106 "-" "PostmanRuntime/7.51.1"
+2026-02-19T13:42:13.180Z [INFO] ::1 - - [19/Feb/2026:13:42:13 +0000] "POST /events HTTP/1.1" 202 106 "-" "PostmanRuntime/7.51.1"
+2026-02-19T13:42:13.941Z [INFO] ::1 - - [19/Feb/2026:13:42:13 +0000] "POST /events HTTP/1.1" 202 106 "-" "PostmanRuntime/7.51.1"
+2026-02-19T13:42:14.663Z [INFO] Picked up 3 events for processing
+2026-02-19T13:42:14.679Z [INFO] ::1 - - [19/Feb/2026:13:42:14 +0000] "POST /events HTTP/1.1" 202 106 "-" "PostmanRuntime/7.51.1"
+2026-02-19T13:42:14.705Z [WARN] DELAYED_FAILURE (roll=0.395) — 12s delay then 500
+2026-02-19T13:42:14.707Z [WARN] IMMEDIATE_FAILURE (roll=0.384) — instant 500
+2026-02-19T13:42:14.712Z [WARN] IMMEDIATE_FAILURE (roll=0.328) — instant 500
+2026-02-19T13:42:14.722Z [INFO] [70336270-9550-4da6-850c-b236026a3903] attempt #1 → status=500 (41ms) | next_retry=2026-02-19T13:42:16.722Z
+2026-02-19T13:42:14.723Z [INFO] [e763c892-8ad9-42bc-9c9a-9d90cf9d07f1] attempt #1 → status=500 (45ms) | next_retry=2026-02-19T13:42:16.723Z
+2026-02-19T13:42:19.662Z [INFO] Picked up 4 events for processing
+2026-02-19T13:42:19.671Z [WARN] IMMEDIATE_FAILURE (roll=0.530) — instant 500
+2026-02-19T13:42:19.677Z [INFO] [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #1 → status=500 (10ms) | next_retry=2026-02-19T13:42:21.677Z
+2026-02-19T13:42:19.674Z [INFO] SUCCESS (roll=0.942) — signature verified
+2026-02-19T13:42:19.676Z [WARN] DELAYED_FAILURE (roll=0.383) — 12s delay then 500
+2026-02-19T13:42:19.677Z [WARN] IMMEDIATE_FAILURE (roll=0.079) — instant 500
+2026-02-19T13:42:19.681Z [INFO] [e763c892-8ad9-42bc-9c9a-9d90cf9d07f1] attempt #2 → status=500 (12ms) | next_retry=2026-02-19T13:42:23.681Z
+2026-02-19T13:42:19.682Z [INFO] [b5704a19-93b7-4f4f-a9b0-72a70aeed5d6] attempt #1 → status=200 (12ms)
+2026-02-19T13:42:24.681Z [INFO] Picked up 3 events for processing
+2026-02-19T13:42:24.714Z [INFO] [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #1 → error="timeout of 10000ms exceeded" (10045ms) | next_retry=2026-02-19T13:42:26.714Z
+2026-02-19T13:42:24.716Z [INFO] SUCCESS (roll=0.981) — signature verified
+2026-02-19T13:42:24.720Z [INFO] [70336270-9550-4da6-850c-b236026a3903] attempt #2 → status=200 (36ms)
+2026-02-19T13:42:24.719Z [WARN] DELAYED_FAILURE (roll=0.273) — 12s delay then 500
+2026-02-19T13:42:24.721Z [WARN] DELAYED_FAILURE (roll=0.334) — 12s delay then 500
+2026-02-19T13:42:29.684Z [INFO] [70336270-9550-4da6-850c-b236026a3903] attempt #2 → error="timeout of 10000ms exceeded" (10014ms) | next_retry=2026-02-19T13:42:33.684Z
+2026-02-19T13:42:29.686Z [INFO] Picked up 2 events for processing
+2026-02-19T13:42:29.691Z [INFO] SUCCESS (roll=0.920) — signature verified
+2026-02-19T13:42:29.693Z [WARN] DELAYED_FAILURE (roll=0.393) — 12s delay then 500
+2026-02-19T13:42:29.696Z [INFO] [e763c892-8ad9-42bc-9c9a-9d90cf9d07f1] attempt #3 → status=200 (7ms)
+2026-02-19T13:42:34.707Z [INFO] [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #2 → error="timeout of 10000ms exceeded" (10012ms) | next_retry=2026-02-19T13:42:38.707Z
+2026-02-19T13:42:34.708Z [INFO] Picked up 1 events for processing
+2026-02-19T13:42:34.710Z [INFO] [e763c892-8ad9-42bc-9c9a-9d90cf9d07f1] attempt #3 → error="timeout of 10000ms exceeded" (10013ms) | next_retry=2026-02-19T13:42:42.710Z
+2026-02-19T13:42:34.712Z [INFO] SUCCESS (roll=0.912) — signature verified
+2026-02-19T13:42:34.716Z [INFO] [70336270-9550-4da6-850c-b236026a3903] attempt #3 → status=200 (6ms)
+2026-02-19T13:42:39.710Z [INFO] Picked up 1 events for processing
+2026-02-19T13:42:39.712Z [INFO] [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #2 → error="timeout of 10000ms exceeded" (10011ms) | next_retry=2026-02-19T13:42:43.712Z
+2026-02-19T13:42:39.713Z [WARN] IMMEDIATE_FAILURE (roll=0.543) — instant 500
+2026-02-19T13:42:39.717Z [INFO] [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #3 → status=500 (4ms) | next_retry=2026-02-19T13:42:47.717Z
+2026-02-19T13:42:44.726Z [INFO] Picked up 1 events for processing
+2026-02-19T13:42:44.730Z [WARN] DELAYED_FAILURE (roll=0.476) — 12s delay then 500
+2026-02-19T13:42:49.727Z [INFO] Picked up 2 events for processing
+2026-02-19T13:42:49.731Z [WARN] DELAYED_FAILURE (roll=0.053) — 12s delay then 500
+2026-02-19T13:42:49.732Z [WARN] DELAYED_FAILURE (roll=0.600) — 12s delay then 500
+2026-02-19T13:42:54.733Z [INFO] Picked up 2 events for processing
+2026-02-19T13:42:54.739Z [INFO] [e763c892-8ad9-42bc-9c9a-9d90cf9d07f1] attempt #4 → error="timeout of 10000ms exceeded" (10009ms) | next_retry=2026-02-19T13:43:10.739Z
+2026-02-19T13:42:54.740Z [WARN] DELAYED_FAILURE (roll=0.690) — 12s delay then 500
+2026-02-19T13:42:54.741Z [WARN] DELAYED_FAILURE (roll=0.303) — 12s delay then 500
+2026-02-19T13:42:59.738Z [INFO] Picked up 1 events for processing
+2026-02-19T13:42:59.746Z [INFO] [e763c892-8ad9-42bc-9c9a-9d90cf9d07f1] attempt #4 → error="timeout of 10000ms exceeded" (10013ms) | next_retry=2026-02-19T13:43:15.746Z
+2026-02-19T13:42:59.746Z [INFO] [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #4 → error="timeout of 10000ms exceeded" (10016ms) | next_retry=2026-02-19T13:43:15.746Z
+2026-02-19T13:42:59.747Z [WARN] DELAYED_FAILURE (roll=0.128) — 12s delay then 500
+2026-02-19T13:43:04.746Z [INFO] [e763c892-8ad9-42bc-9c9a-9d90cf9d07f1] attempt #4 → error="timeout of 10000ms exceeded" (10003ms) | next_retry=2026-02-19T13:43:20.746Z
+2026-02-19T13:43:04.747Z [INFO] [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #4 → error="timeout of 10000ms exceeded" (10004ms) | next_retry=2026-02-19T13:43:20.747Z
+2026-02-19T13:43:09.760Z [INFO] [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #4 → error="timeout of 10000ms exceeded" (10011ms) | next_retry=2026-02-19T13:43:25.760Z
+2026-02-19T13:43:24.795Z [INFO] Picked up 1 events for processing
+2026-02-19T13:43:24.799Z [INFO] SUCCESS (roll=0.962) — signature verified
+2026-02-19T13:43:24.802Z [INFO] [e763c892-8ad9-42bc-9c9a-9d90cf9d07f1] attempt #5 → status=200 (5ms)
+2026-02-19T13:43:29.799Z [INFO] Picked up 1 events for processing
+2026-02-19T13:43:29.804Z [WARN] IMMEDIATE_FAILURE (roll=0.211) — instant 500
+2026-02-19T13:43:29.807Z [INFO] [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #5 → status=500 (4ms) | next_retry=2026-02-19T13:44:01.807Z
+2026-02-19T13:44:04.859Z [INFO] Picked up 1 events for processing
+2026-02-19T13:44:04.866Z [WARN] IMMEDIATE_FAILURE (roll=0.017) — instant 500
+2026-02-19T13:44:04.870Z [INFO] [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #6 → status=500 (7ms) | next_retry=2026-02-19T13:45:08.870Z
+2026-02-19T13:44:07.732Z [INFO] ::1 - - [19/Feb/2026:13:44:07 +0000] "POST /events HTTP/1.1" 202 106 "-" "PostmanRuntime/7.51.1"
+2026-02-19T13:44:08.659Z [INFO] ::1 - - [19/Feb/2026:13:44:08 +0000] "POST /events HTTP/1.1" 202 106 "-" "PostmanRuntime/7.51.1"
+2026-02-19T13:44:09.484Z [INFO] ::1 - - [19/Feb/2026:13:44:09 +0000] "POST /events HTTP/1.1" 202 106 "-" "PostmanRuntime/7.51.1"
+2026-02-19T13:44:09.856Z [INFO] Picked up 3 events for processing
+2026-02-19T13:44:09.862Z [WARN] DELAYED_FAILURE (roll=0.028) — 12s delay then 500
+2026-02-19T13:44:09.863Z [WARN] DELAYED_FAILURE (roll=0.069) — 12s delay then 500
+2026-02-19T13:44:09.864Z [WARN] IMMEDIATE_FAILURE (roll=0.394) — instant 500
+2026-02-19T13:44:09.867Z [INFO] [082dbac0-f3a3-42f2-92e9-687363cbdca0] attempt #1 → status=500 (7ms) | next_retry=2026-02-19T13:44:11.867Z
+2026-02-19T13:44:10.158Z [INFO] ::1 - - [19/Feb/2026:13:44:10 +0000] "POST /events HTTP/1.1" 202 106 "-" "PostmanRuntime/7.51.1"
+2026-02-19T13:44:14.862Z [INFO] Picked up 4 events for processing
+2026-02-19T13:44:14.868Z [WARN] IMMEDIATE_FAILURE (roll=0.486) — instant 500
+2026-02-19T13:44:14.870Z [INFO] SUCCESS (roll=0.702) — signature verified
+2026-02-19T13:44:14.871Z [INFO] SUCCESS (roll=0.840) — signature verified
+2026-02-19T13:44:14.872Z [WARN] IMMEDIATE_FAILURE (roll=0.481) — instant 500
+2026-02-19T13:44:14.873Z [INFO] [34f32ec5-7d5c-4115-99fa-a8897874e617] attempt #1 → status=500 (7ms) | next_retry=2026-02-19T13:44:16.873Z
+2026-02-19T13:44:14.875Z [INFO] [17e4e9ff-31f5-4340-a6b9-03cdd60eb785] attempt #1 → status=200 (9ms)
+2026-02-19T13:44:14.878Z [INFO] [d9355274-6880-488b-a1a5-ec580ffb1d0b] attempt #1 → status=200 (8ms)
+2026-02-19T13:44:14.878Z [INFO] [082dbac0-f3a3-42f2-92e9-687363cbdca0] attempt #2 → status=500 (11ms) | next_retry=2026-02-19T13:44:18.878Z
+2026-02-19T13:44:19.865Z [INFO] [34f32ec5-7d5c-4115-99fa-a8897874e617] attempt #1 → error="timeout of 10000ms exceeded" (10005ms) | next_retry=2026-02-19T13:44:21.864Z
+2026-02-19T13:44:19.865Z [INFO] [d9355274-6880-488b-a1a5-ec580ffb1d0b] attempt #1 → error="timeout of 10000ms exceeded" (10005ms) | next_retry=2026-02-19T13:44:21.865Z
+2026-02-19T13:44:19.870Z [INFO] Picked up 1 events for processing
+2026-02-19T13:44:19.873Z [INFO] SUCCESS (roll=0.740) — signature verified
+2026-02-19T13:44:19.877Z [INFO] [082dbac0-f3a3-42f2-92e9-687363cbdca0] attempt #3 → status=200 (5ms)
+2026-02-19T13:44:24.869Z [INFO] Picked up 2 events for processing
+2026-02-19T13:44:24.873Z [WARN] DELAYED_FAILURE (roll=0.563) — 12s delay then 500
+2026-02-19T13:44:24.875Z [INFO] SUCCESS (roll=0.805) — signature verified
+2026-02-19T13:44:24.878Z [INFO] [d9355274-6880-488b-a1a5-ec580ffb1d0b] attempt #2 → status=200 (5ms)
+2026-02-19T13:44:29.876Z [INFO] Picked up 1 events for processing
+2026-02-19T13:44:29.881Z [INFO] SUCCESS (roll=0.961) — signature verified
+2026-02-19T13:44:29.884Z [INFO] [34f32ec5-7d5c-4115-99fa-a8897874e617] attempt #2 → status=200 (5ms)
+2026-02-19T13:44:34.883Z [INFO] [34f32ec5-7d5c-4115-99fa-a8897874e617] attempt #2 → error="timeout of 10000ms exceeded" (10002ms) | next_retry=2026-02-19T13:44:38.883Z
+2026-02-19T13:44:39.894Z [INFO] Picked up 1 events for processing
+2026-02-19T13:44:39.898Z [INFO] SUCCESS (roll=0.749) — signature verified
+2026-02-19T13:44:39.901Z [INFO] [34f32ec5-7d5c-4115-99fa-a8897874e617] attempt #3 → status=200 (4ms)
+2026-02-19T13:44:59.918Z [INFO] Picked up 1 events for processing
+2026-02-19T13:44:59.921Z [WARN] DELAYED_FAILURE (roll=0.320) — 12s delay then 500
+2026-02-19T13:45:04.932Z [INFO] Picked up 1 events for processing
+2026-02-19T13:45:04.936Z [WARN] DELAYED_FAILURE (roll=0.268) — 12s delay then 500
+2026-02-19T13:45:08.420Z [INFO] [4267306b-7fb3-434a-8983-65539d84fbfa] attempt #10 → error="read ECONNRESET" (3476ms) | next_retry=DEAD - max attempts reached
+2026-02-19T13:45:08.421Z [INFO] [4267306b-7fb3-434a-8983-65539d84fbfa] attempt #10 → error="read ECONNRESET" (8491ms) | next_retry=DEAD - max attempts reached
+2026-02-19T13:45:09.935Z [INFO] Picked up 1 events for processing
+2026-02-19T13:45:09.941Z [INFO] [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #7 → error="" (3ms) | next_retry=2026-02-19T13:47:17.941Z
+2026-02-19T13:45:22.584Z [INFO] Webhook Dispatcher starting...
+2026-02-19T13:45:22.633Z [INFO] Mock receiver listening on :3001 (fail first 5 attempts)
+2026-02-19T13:45:22.701Z [INFO] Database connection established
+2026-02-19T13:45:22.724Z [INFO] Database synced
+2026-02-19T13:45:22.729Z [INFO] Dispatcher polling loop started (interval: 5000ms)
+2026-02-19T13:45:22.730Z [INFO] API listening on port 3000
+2026-02-19T13:45:25.291Z [INFO] ::1 - - [19/Feb/2026:13:45:25 +0000] "POST /events HTTP/1.1" 202 106 "-" "PostmanRuntime/7.51.1"
+2026-02-19T13:45:26.174Z [INFO] ::1 - - [19/Feb/2026:13:45:26 +0000] "POST /events HTTP/1.1" 202 106 "-" "PostmanRuntime/7.51.1"
+2026-02-19T13:45:27.742Z [INFO] Picked up 2 events for processing
+2026-02-19T13:45:27.785Z [WARN] REJECTED event=5edf339a-62c3-4478-913a-4ed545274fac attempt=1/5 — returning 500
+2026-02-19T13:45:27.794Z [WARN] REJECTED event=27f097d6-7373-4a50-81f7-446200a78f75 attempt=1/5 — returning 500
+2026-02-19T13:45:27.804Z [INFO] FAILED [5edf339a-62c3-4478-913a-4ed545274fac] attempt #1 → status=500 (50ms) | retry in 2s (2026-02-19T13:45:29.804Z)
+2026-02-19T13:45:27.806Z [INFO] FAILED [27f097d6-7373-4a50-81f7-446200a78f75] attempt #1 → status=500 (47ms) | retry in 2s (2026-02-19T13:45:29.806Z)

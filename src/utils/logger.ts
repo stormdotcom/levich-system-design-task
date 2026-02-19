@@ -27,6 +27,7 @@ export const logger = {
 
 export function logAttempt(log: AttemptLog): void {
   const status = log.httpStatus !== null ? `status=${log.httpStatus}` : `error="${log.error}"`;
-  const retry = log.nextRetryAt ? ` | next_retry=${log.nextRetryAt}` : '';
-  logger.info(`[${log.eventId}] attempt #${log.attempt} → ${status} (${log.durationMs}ms)${retry}`);
+  const outcome = log.nextRetryAt ? 'FAILED' : 'DELIVERED';
+  const retry = log.nextRetryAt ? ` | retry ${log.nextRetryAt}` : '';
+  logger.info(`${outcome} [${log.eventId}] attempt #${log.attempt} → ${status} (${log.durationMs}ms)${retry}`);
 }

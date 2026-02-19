@@ -10,6 +10,10 @@ interface RawBodyRequest extends http.IncomingMessage {
 
 const app = express();
 
+// Track request count per event to simulate N failures then success
+const attemptCounter = new Map<string, number>();
+const FAIL_FIRST_N = parseInt(process.env.FAIL_FIRST_N || '5', 10);
+
 app.use(
   express.json({
     verify: (req: http.IncomingMessage, _res, buf) => {
@@ -18,46 +22,37 @@ app.use(
   }),
 );
 
-app.post('/webhook', async (req: Request, res: Response) => {
-  const roll = Math.random();
+app.post('/webhook', (req: Request, res: Response) => {
+  const eventId = req.body?.event_id || 'unknown';
+  const count = (attemptCounter.get(eventId) || 0) + 1;
+  attemptCounter.set(eventId, count);
 
-  if (roll < 0.7) {
-    const delayedFailure = Math.random() < 0.5;
+  // Fail the first N attempts, succeed after that
+  if (count <= FAIL_FIRST_N) {
+    logger.warn(`REJECTED event=${eventId} attempt=${count}/${FAIL_FIRST_N} — returning 500`);
+    res.status(500).json({ error: 'Simulated failure' });
+    return;
+  }
 
-    if (delayedFailure) {
-      logger.warn(`DELAYED_FAILURE (roll=${roll.toFixed(3)}) — 12s delay then 500`);
-      await new Promise((r) => setTimeout(r, 12000));
-      res.status(500).json({ error: 'Simulated delayed failure' });
-    } else {
-      logger.warn(`IMMEDIATE_FAILURE (roll=${roll.toFixed(3)}) — instant 500`);
-      res.status(500).json({ error: 'Simulated immediate failure' });
-    }
+  const signature = req.headers['x-signature'] as string;
+  const rawBody = (req as unknown as RawBodyRequest).rawBody;
+
+  if (!signature || !rawBody) {
+    logger.error(`BAD_REQUEST event=${eventId} — missing signature or body`);
+    res.status(400).json({ error: 'Missing signature' });
+    return;
+  }
+
+  const valid = verifySignature(rawBody, signature);
+  if (valid) {
+    logger.info(`ACCEPTED event=${eventId} attempt=${count} — signature verified`);
+    res.status(200).json({ received: true });
   } else {
-    const signature = req.headers['x-signature'] as string;
-    const rawBody = (req as unknown as RawBodyRequest).rawBody;
-
-    if (!signature || !rawBody) {
-      logger.error('BAD_REQUEST — missing signature or body');
-      res.status(400).json({ error: 'Missing signature' });
-      return;
-    }
-
-    try {
-      const valid = verifySignature(rawBody, signature);
-      if (valid) {
-        logger.info(`SUCCESS (roll=${roll.toFixed(3)}) — signature verified`);
-        res.status(200).json({ received: true });
-      } else {
-        logger.error(`SIGNATURE_MISMATCH (roll=${roll.toFixed(3)})`);
-        res.status(401).json({ error: 'Invalid signature' });
-      }
-    } catch (err) {
-      logger.error(`SIGNATURE_ERROR — ${String(err)}`);
-      res.status(401).json({ error: 'Signature verification failed' });
-    }
+    logger.error(`SIGNATURE_MISMATCH event=${eventId}`);
+    res.status(401).json({ error: 'Invalid signature' });
   }
 });
 
 app.listen(config.mockReceiverPort, () => {
-  logger.info(`Listening on port ${config.mockReceiverPort}`);
+  logger.info(`Mock receiver listening on :${config.mockReceiverPort} (fail first ${FAIL_FIRST_N} attempts)`);
 });
