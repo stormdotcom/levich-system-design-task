@@ -4,8 +4,6 @@ export enum PaymentStatus {
   DEAD = 'dead',
 }
 
-// ── Request / Response DTOs ──
-
 export interface CreateEventDTO {
   target_url: string;
   payload: Record<string, unknown>;
@@ -30,7 +28,6 @@ export interface PaginatedResponse<T> {
   limit: number;
 }
 
-// ── Domain Types ──
 
 export interface PaymentRecord {
   id: string;
@@ -61,7 +58,6 @@ export interface DeliveryResult {
   durationMs: number;
 }
 
-// ── Logging ──
 
 export interface AttemptLog {
   eventId: string;
