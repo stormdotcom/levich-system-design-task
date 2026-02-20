@@ -6,21 +6,21 @@ import { signPayload } from '../utils/hmac';
 import { logAttempt, logger } from '../utils/logger';
 
 export class DeliveryService {
-  async deliverEvent(event: LockedEvent): Promise<void> {
+  async deliverEvent(event: LockedEvent, transaction?: any): Promise<void> {
     const attemptNumber = event.attempted_count + 1;
     const result = await this.attemptHttp(event);
 
     if (result.success) {
-      await paymentRepository.markSucceeded(event.id, attemptNumber);
+      await paymentRepository.markSucceeded(event.id, attemptNumber, transaction);
     } else {
       const isDead = attemptNumber >= config.maxAttempts;
 
       if (isDead) {
-        await paymentRepository.markDead(event.id, attemptNumber);
+        await paymentRepository.markDead(event.id, attemptNumber, transaction);
       } else {
         const backoffSeconds = Math.pow(2, attemptNumber);
         const nextAttemptAt = new Date(Date.now() + backoffSeconds * 1000);
-        await paymentRepository.markFailed(event.id, attemptNumber, nextAttemptAt);
+        await paymentRepository.markFailed(event.id, attemptNumber, nextAttemptAt, transaction);
       }
     }
 
@@ -32,13 +32,17 @@ export class DeliveryService {
 
     try {
       const events = await paymentRepository.fetchPendingBatch(transaction);
-      await transaction.commit();
 
       if (events.length > 0) {
         logger.info(`Picked up ${events.length} events for processing`);
-        await Promise.all(events.map((event) => this.deliverEvent(event)));
+        // Process sequentially or carefully to keep transaction open
+        // For a simple dispatcher, sequential is safest under a single transaction
+        for (const event of events) {
+          await this.deliverEvent(event, transaction);
+        }
       }
 
+      await transaction.commit();
       return events.length;
     } catch (err) {
       await transaction.rollback();
@@ -59,7 +63,7 @@ export class DeliveryService {
           'Content-Type': 'application/json',
           'X-Signature': signature,
         },
-        validateStatus: () => true, //TODO: more verbose logging 
+        validateStatus: () => true,
       });
 
       const durationMs = Date.now() - start;

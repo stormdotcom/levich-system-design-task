@@ -47,18 +47,18 @@ export class PaymentRepository {
     );
   }
 
-  async markSucceeded(id: string, attemptNumber: number): Promise<void> {
+  async markSucceeded(id: string, attemptNumber: number, transaction?: Transaction): Promise<void> {
     await Payment.update(
       {
         status: PaymentStatus.SUCCEEDED,
         attempted_count: attemptNumber,
         last_attempted_at: new Date(),
       },
-      { where: { id } },
+      { where: { id }, transaction },
     );
   }
 
-  async markFailed(id: string, attemptNumber: number, nextAttemptAt: Date): Promise<void> {
+  async markFailed(id: string, attemptNumber: number, nextAttemptAt: Date, transaction?: Transaction): Promise<void> {
     await Payment.update(
       {
         status: PaymentStatus.PENDING,
@@ -66,18 +66,18 @@ export class PaymentRepository {
         last_attempted_at: new Date(),
         next_attempt_at: nextAttemptAt,
       },
-      { where: { id } },
+      { where: { id }, transaction },
     );
   }
 
-  async markDead(id: string, attemptNumber: number): Promise<void> {
+  async markDead(id: string, attemptNumber: number, transaction?: Transaction): Promise<void> {
     await Payment.update(
       {
         status: PaymentStatus.DEAD,
         attempted_count: attemptNumber,
         last_attempted_at: new Date(),
       },
-      { where: { id } },
+      { where: { id }, transaction },
     );
   }
 

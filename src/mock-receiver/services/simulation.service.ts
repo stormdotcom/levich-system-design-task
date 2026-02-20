@@ -17,13 +17,37 @@ export class SimulationService {
     const count = (this.attemptCounter.get(eventId) || 0) + 1;
     this.attemptCounter.set(eventId, count);
 
-    const shouldTimeout = Math.random() < this.timeoutProbability;
-    const delayMs = shouldTimeout
-      ? 15000 // Force timeout > dispatcher 10s
-      : Math.floor(Math.random() * (this.maxDelay - this.minDelay + 1) + this.minDelay);
+    // If failFirstN is set, enforce failure for first N attempts
+    // This allows deterministic log proofs as required by the assignment
+    let shouldReject = false;
+    let shouldTimeout = false;
+    let delayMs = Math.floor(Math.random() * (this.maxDelay - this.minDelay + 1) + this.minDelay);
+
+    if (count <= this.failFirstN) {
+      // Deterministic failure phase
+      shouldReject = true;
+      // Occasionally simulate timeout even in deterministic phase for variety
+      if (Math.random() < 0.2) {
+        shouldTimeout = true;
+        delayMs = 12000;
+      }
+    } else {
+      // Probabilistic chaos phase (realistic server behavior)
+      const roll = Math.random();
+      if (roll < 0.4) {
+        // Immediate failure
+        shouldReject = true;
+      } else if (roll < 0.7) {
+        // Delayed failure (simulates timeout)
+        shouldReject = true;
+        shouldTimeout = true;
+        delayMs = 12000;
+      }
+      // Else: Success
+    }
 
     return {
-      shouldReject: count <= this.failFirstN,
+      shouldReject,
       shouldTimeout,
       delayMs,
       count,
