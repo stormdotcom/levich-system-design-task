@@ -4,8 +4,6 @@ yarn-error.log
 dist/
 build/
 *.tsbuildinfo
-.claude_cache
-.claude/
 .env
 .env.local
 .vscode/
