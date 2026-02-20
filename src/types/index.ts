@@ -40,16 +40,7 @@ export interface PaymentRecord {
   last_attempted_at: Date | null;
 }
 
-export interface LockedEvent {
-  id: string;
-  target_url: string;
-  payload: Record<string, unknown>;
-  status: PaymentStatus;
-  attempted_count: number;
-  next_attempt_at: Date;
-  created_at: Date;
-  last_attempted_at: Date | null;
-}
+export type LockedEvent = PaymentRecord;
 
 export interface DeliveryResult {
   success: boolean;
