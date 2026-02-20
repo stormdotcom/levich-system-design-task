@@ -150,3 +150,6 @@
 2026-02-19T13:47:17.949Z [INFO] Picked up 1 events for processing
 2026-02-19T13:47:17.952Z [WARN] REJECTED event=ed61cc8d-1c3e-4f23-a261-3591b437117c attempt=1/5 — returning 500
 2026-02-19T13:47:17.956Z [INFO] FAILED [ed61cc8d-1c3e-4f23-a261-3591b437117c] attempt #8 → status=500 (4ms) | retry in 256s (2026-02-19T13:51:33.956Z)
+2026-02-20T04:15:29.822Z [INFO] Webhook Dispatcher starting...
+2026-02-20T04:15:30.095Z [INFO] Database connection established
+2026-02-20T04:15:30.191Z [INFO] Database synced
