@@ -1,15 +1,4 @@
-# Webhook Dispatcher — Fintech System Design
-
-## The Problem
-
-When a payment happens, we need to notify a merchant's server via an HTTP webhook. Merchant servers time out, return 500s, and go offline for hours. If our own service crashes mid-retry, we can't lose the event.
-
-## Approach & Solution
-
-### Core Insight
-
-**Don't use memory for anything can't afford to lose.**
-Instead of an in-memory queue, PostgreSQL is the queue. Every event is a row. The dispatcher is a polling loop that reads from that table. If the process crashes, PostgreSQL still has the row. On restart, it picks up exactly where it left off.
+# Webhook — Fintech System Design
 
 ### The Flow
 
