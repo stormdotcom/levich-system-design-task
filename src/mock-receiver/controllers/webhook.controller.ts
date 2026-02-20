@@ -13,8 +13,16 @@ interface RawBodyRequest extends http.IncomingMessage {
 export class WebhookController {
   async handleWebhook(req: Request, res: Response): Promise<void> {
     const eventId = req.body?.event_id || 'unknown';
-    const { shouldReject, count } = simulationService.processAttempt(eventId);
+    const { shouldReject, shouldTimeout, delayMs, count } = simulationService.processAttempt(eventId);
     const failFirstN = simulationService.getFailFirstN();
+
+    // simulate network latency/timeout
+    if (delayMs > 0) {
+        if (shouldTimeout) {
+             logger.warn(`TIMEOUT_SIMULATION event=${eventId} attempt=${count} — sleeping ${delayMs}ms`);
+        }
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
 
     // simulate network/server failure
     if (shouldReject) {
